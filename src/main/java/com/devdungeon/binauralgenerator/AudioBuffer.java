@@ -27,12 +27,12 @@ package com.devdungeon.binauralgenerator;
  *
  * @author NanoDano <nanodano@devdungeon.com>
  */
-public final class AudioChannel
+public final class AudioBuffer
 {    
     private final byte[] buffer;
     private final int sampleRate;
     
-    AudioChannel(int _sampleRate, int _frequency)
+    AudioBuffer(int _sampleRate, int _frequency)
     {
         sampleRate = _sampleRate;
         buffer = new byte[sampleRate];

@@ -1,16 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.devdungeon.binauralgenerator;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 
 /**
  *
@@ -22,16 +12,11 @@ public class BinauralGenerator extends javax.swing.JFrame {
     private static final int SAMPLE_SIZE = 8; // 8-bit per sample
     private static final int NUM_CHANNELS = 2; // Stereo
     private final AudioFormat audioFormat;
-    
-    public static int leftFreq;
-    public static int rightFreq;
- 
-    
-    public SourceDataLine line;
-    
-    AudioChannel leftChannel;
-    AudioChannel rightChannel;
-    //AudioInterpolator.interpolate(line, leftChannel, rightChannel);
+    private static int leftFreq;
+    private static int rightFreq;
+    private final AudioOut audioOut;
+    private final AudioBuffer leftChannel;
+    private final AudioBuffer rightChannel;
 
     /**
      * Creates new form MainWindow
@@ -45,16 +30,11 @@ public class BinauralGenerator extends javax.swing.JFrame {
         leftFreq = leftFreqSlider.getValue();
         rightFreq = rightFreqSlider.getValue();
         
-        leftChannel = new AudioChannel(SAMPLE_RATE, leftFreq);
-        rightChannel = new AudioChannel(SAMPLE_RATE, rightFreq);
+        leftChannel = new AudioBuffer(SAMPLE_RATE, leftFreq);
+        rightChannel = new AudioBuffer(SAMPLE_RATE, rightFreq);
         
-        try {
-            line = AudioSystem.getSourceDataLine(audioFormat);
-            line.open(audioFormat, SAMPLE_RATE);
-            line.start();
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(BinauralGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        audioOut = new AudioOut(audioFormat);
+               
     }
 
     public static void main(String args[]) {
@@ -176,12 +156,7 @@ public class BinauralGenerator extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void playTone(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playTone
-        for (int i = 0; i < 3; i++) {
-            line.write(leftChannel.getBuffer(), 0, SAMPLE_RATE);
-            line.write(rightChannel.getBuffer(), 0, SAMPLE_RATE);
-        }
-        line.drain();
-//        line.close();
+        audioOut.playStereo(leftChannel, rightChannel);
     }//GEN-LAST:event_playTone
 
     private void updateLeftFreq(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateLeftFreq
@@ -192,8 +167,7 @@ public class BinauralGenerator extends javax.swing.JFrame {
 
     private void updateRightFreq(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateRightFreq
         rightFreq = rightFreqSlider.getValue();
-        
-        // Fill the buffer with the new frequency
+        rightChannel.fillBufferWithSineWave(rightFreq);
     }//GEN-LAST:event_updateRightFreq
 
     
