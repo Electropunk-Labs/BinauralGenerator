@@ -55,10 +55,7 @@ public final class AudioBuffer
             buffer[i] = (byte) (Math.sin(angleLeft) * 127f);
         }
     }
-    
-    // sineWave
-    // squareWave
-    // whiteNoise
+
     public byte[] getBuffer()
     {
         return buffer;

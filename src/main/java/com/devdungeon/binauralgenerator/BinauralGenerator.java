@@ -6,17 +6,18 @@ import javax.sound.sampled.AudioFormat;
  *
  * @author NanoDano <nanodano@devdungeon.com>
  */
-public class BinauralGenerator extends javax.swing.JFrame {
-
+public class BinauralGenerator extends javax.swing.JFrame
+{
     private static final int SAMPLE_RATE = 16 * 1024; // ~16KHz
     private static final int SAMPLE_SIZE = 8; // 8-bit per sample
     private static final int NUM_CHANNELS = 2; // Stereo
     private final AudioFormat audioFormat;
     private static int leftFreq;
     private static int rightFreq;
-    private final AudioOut audioOut;
+    private AudioOut bgPlayer; // a thread subclass
     private final AudioBuffer leftChannel;
     private final AudioBuffer rightChannel;
+    private boolean isPlaying = false;
 
     /**
      * Creates new form MainWindow
@@ -24,17 +25,11 @@ public class BinauralGenerator extends javax.swing.JFrame {
     public BinauralGenerator()
     {
         initComponents();
-        
         audioFormat = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE, NUM_CHANNELS, true, true);
-        
         leftFreq = leftFreqSlider.getValue();
         rightFreq = rightFreqSlider.getValue();
-        
         leftChannel = new AudioBuffer(SAMPLE_RATE, leftFreq);
         rightChannel = new AudioBuffer(SAMPLE_RATE, rightFreq);
-        
-        audioOut = new AudioOut(audioFormat);
-               
     }
 
     public static void main(String args[]) {
@@ -97,9 +92,9 @@ public class BinauralGenerator extends javax.swing.JFrame {
 
         playButton.setText("Play");
         playButton.setToolTipText("");
-        playButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                playTone(evt);
+        playButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toggleSound(evt);
             }
         });
 
@@ -155,12 +150,7 @@ public class BinauralGenerator extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void playTone(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playTone
-        audioOut.playStereo(leftChannel, rightChannel);
-    }//GEN-LAST:event_playTone
-
     private void updateLeftFreq(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateLeftFreq
-        // Get the updated frequency
         leftFreq = leftFreqSlider.getValue();
         leftChannel.fillBufferWithSineWave(leftFreq);        
     }//GEN-LAST:event_updateLeftFreq
@@ -170,7 +160,26 @@ public class BinauralGenerator extends javax.swing.JFrame {
         rightChannel.fillBufferWithSineWave(rightFreq);
     }//GEN-LAST:event_updateRightFreq
 
-    
+    private void toggleSound(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleSound
+        toggleAudio();
+    }//GEN-LAST:event_toggleSound
+
+    /**
+     * Start and stop the binaural audio.
+     */
+    private void toggleAudio() {
+        if (isPlaying) {
+            bgPlayer.shutdown();
+            isPlaying = false;
+        } else {
+            System.out.println("Starting.");
+            bgPlayer = new AudioOut(audioFormat, leftChannel.getBuffer(), rightChannel.getBuffer());
+            System.out.println("Created.");
+            bgPlayer.start();
+            System.out.println("Started.");
+            isPlaying = true;
+        }
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel leftChanLabel;
