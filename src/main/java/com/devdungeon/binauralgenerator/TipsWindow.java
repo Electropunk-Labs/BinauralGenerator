@@ -54,7 +54,7 @@ public class TipsWindow extends javax.swing.JFrame {
         tipsTextArea.setEditable(false);
         tipsTextArea.setColumns(20);
         tipsTextArea.setRows(5);
-        tipsTextArea.setText("Tips:\n\n");
+        tipsTextArea.setText("https://en.wikipedia.org/wiki/Binaural_beats\nhttps://en.wikipedia.org/wiki/Brainwave_entrainment\n\nBrainwave frequencies:\n\nGamma, 30 to 50 Hz\nBeta,  14 to 30 Hz\nAlpha, 8 to 14 Hz\nTheta, 4 to 8 Hz\nDelta, 0.1 to 4 Hz\n");
         tipsScrollPane.setViewportView(tipsTextArea);
 
         closeButton.setText("Close Window");

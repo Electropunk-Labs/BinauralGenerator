@@ -65,7 +65,7 @@
             <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="Tips:&#xa;&#xa;"/>
+            <Property name="text" type="java.lang.String" value="https://en.wikipedia.org/wiki/Binaural_beats&#xa;https://en.wikipedia.org/wiki/Brainwave_entrainment&#xa;&#xa;Brainwave frequencies:&#xa;&#xa;Gamma, 30 to 50 Hz&#xa;Beta,  14 to 30 Hz&#xa;Alpha, 8 to 14 Hz&#xa;Theta, 4 to 8 Hz&#xa;Delta, 0.1 to 4 Hz&#xa;"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -39,6 +39,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="About"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -230,7 +233,6 @@
     <Component class="javax.swing.JButton" name="preset1Button2">
       <Properties>
         <Property name="text" type="java.lang.String" value="40Hz &amp; 44Hz"/>
-        <Property name="actionCommand" type="java.lang.String" value="40Hz &amp; 44Hz"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="preset1Button2ActionPerformed"/>

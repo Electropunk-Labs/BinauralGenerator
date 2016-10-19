@@ -36,6 +36,8 @@ public class BinauralGenerator extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
+        WindowHelper.setLookAndFeel();
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -135,7 +137,6 @@ public class BinauralGenerator extends javax.swing.JFrame {
         });
 
         preset1Button2.setText("40Hz & 44Hz");
-        preset1Button2.setActionCommand("40Hz & 44Hz");
         preset1Button2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 preset1Button2ActionPerformed(evt);
@@ -173,6 +174,11 @@ public class BinauralGenerator extends javax.swing.JFrame {
         helpMenu.add(tipsMenuItem);
 
         aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
         helpMenu.add(aboutMenuItem);
 
         jMenuBar1.add(helpMenu);
@@ -295,6 +301,11 @@ public class BinauralGenerator extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        String args[] = new String[0];
+        AboutWindow.main(args);
+    }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     /**
      * Start and stop the binaural audio.
