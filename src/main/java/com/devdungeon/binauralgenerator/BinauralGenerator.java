@@ -5,9 +5,12 @@ import javax.sound.sampled.AudioFormat;
 /**
  *
  * @author NanoDano <nanodano@devdungeon.com>
+ *
+ * TODO: Fix clicking when it changes frequencies (fill a second buffer before
+ * swapping? Swap it only at the end of a cycle?)
  */
-public class BinauralGenerator extends javax.swing.JFrame
-{
+public class BinauralGenerator extends javax.swing.JFrame {
+
     private static final int SAMPLE_RATE = 16 * 1024; // ~16KHz
     private static final int SAMPLE_SIZE = 8; // 8-bit per sample
     private static final int NUM_CHANNELS = 2; // Stereo
@@ -22,14 +25,14 @@ public class BinauralGenerator extends javax.swing.JFrame
     /**
      * Creates new form MainWindow
      */
-    public BinauralGenerator()
-    {
+    public BinauralGenerator() {
         initComponents();
         audioFormat = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE, NUM_CHANNELS, true, true);
         leftFreq = leftFreqSlider.getValue();
         rightFreq = rightFreqSlider.getValue();
         leftChannel = new AudioBuffer(SAMPLE_RATE, leftFreq);
         rightChannel = new AudioBuffer(SAMPLE_RATE, rightFreq);
+        setIconImages(WindowHelper.loadIcons());
     }
 
     public static void main(String args[]) {
@@ -41,7 +44,7 @@ public class BinauralGenerator extends javax.swing.JFrame
             }
         });
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,15 +62,26 @@ public class BinauralGenerator extends javax.swing.JFrame
         playButton = new javax.swing.JToggleButton();
         leftFreqLabel = new javax.swing.JLabel();
         rightFreqLabel = new javax.swing.JLabel();
+        presetsLabel = new javax.swing.JLabel();
+        preset1Button = new javax.swing.JButton();
+        preset1Button1 = new javax.swing.JButton();
+        preset1Button2 = new javax.swing.JButton();
+        preset1Button3 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        exitMenuItem = new javax.swing.JMenuItem();
+        helpMenu = new javax.swing.JMenu();
+        tipsMenuItem = new javax.swing.JMenuItem();
+        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Binaural Generator");
 
         leftFreqSlider.setMajorTickSpacing(5);
-        leftFreqSlider.setMaximum(480);
-        leftFreqSlider.setMinimum(400);
+        leftFreqSlider.setMaximum(60);
+        leftFreqSlider.setMinimum(20);
         leftFreqSlider.setMinorTickSpacing(1);
         leftFreqSlider.setPaintTicks(true);
-        leftFreqSlider.setValue(430);
         leftFreqSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 updateLeftFreq(evt);
@@ -75,11 +89,10 @@ public class BinauralGenerator extends javax.swing.JFrame
         });
 
         rightFreqSlider.setMajorTickSpacing(5);
-        rightFreqSlider.setMaximum(480);
-        rightFreqSlider.setMinimum(400);
+        rightFreqSlider.setMaximum(60);
+        rightFreqSlider.setMinimum(20);
         rightFreqSlider.setMinorTickSpacing(1);
         rightFreqSlider.setPaintTicks(true);
-        rightFreqSlider.setValue(450);
         rightFreqSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 updateRightFreq(evt);
@@ -90,11 +103,12 @@ public class BinauralGenerator extends javax.swing.JFrame
 
         rightChanLabel.setText("Right channel");
 
+        playButton.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         playButton.setText("Play");
         playButton.setToolTipText("");
-        playButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                toggleSound(evt);
+        playButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playButtonActionPerformed(evt);
             }
         });
 
@@ -104,46 +118,130 @@ public class BinauralGenerator extends javax.swing.JFrame
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, rightFreqSlider, org.jdesktop.beansbinding.ELProperty.create("${value} Hz"), rightFreqLabel, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
+        presetsLabel.setText("Presets");
+
+        preset1Button.setText("32Hz & 40Hz");
+        preset1Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                preset1ButtonActionPerformed(evt);
+            }
+        });
+
+        preset1Button1.setText("50Hz & 51Hz");
+        preset1Button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                preset1Button1ActionPerformed(evt);
+            }
+        });
+
+        preset1Button2.setText("40Hz & 44Hz");
+        preset1Button2.setActionCommand("40Hz & 44Hz");
+        preset1Button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                preset1Button2ActionPerformed(evt);
+            }
+        });
+
+        preset1Button3.setText("24Hz & 30Hz");
+        preset1Button3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                preset1Button3ActionPerformed(evt);
+            }
+        });
+
+        fileMenu.setText("File");
+
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitMenuItem);
+
+        jMenuBar1.add(fileMenu);
+
+        helpMenu.setText("Help");
+
+        tipsMenuItem.setText("Tips");
+        tipsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipsMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(tipsMenuItem);
+
+        aboutMenuItem.setText("About");
+        helpMenu.add(aboutMenuItem);
+
+        jMenuBar1.add(helpMenu);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rightChanLabel)
-                            .addComponent(leftChanLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(leftFreqSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rightFreqSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(rightChanLabel)
+                                    .addComponent(leftChanLabel)
+                                    .addComponent(presetsLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(leftFreqSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(rightFreqSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(preset1Button3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(preset1Button2))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(preset1Button)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(preset1Button1)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(leftFreqLabel)
-                            .addComponent(rightFreqLabel)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(129, 129, 129)
-                        .addComponent(playButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(rightFreqLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(playButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(leftFreqLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(leftFreqSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(leftChanLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(leftChanLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(rightFreqSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(rightChanLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rightFreqLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(playButton)
-                .addContainerGap())
+                    .addComponent(rightFreqLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(presetsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(preset1Button)
+                    .addComponent(preset1Button1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(preset1Button3)
+                    .addComponent(preset1Button2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -153,7 +251,7 @@ public class BinauralGenerator extends javax.swing.JFrame
 
     private void updateLeftFreq(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateLeftFreq
         leftFreq = leftFreqSlider.getValue();
-        leftChannel.fillBufferWithSineWave(leftFreq);        
+        leftChannel.fillBufferWithSineWave(leftFreq);
     }//GEN-LAST:event_updateLeftFreq
 
     private void updateRightFreq(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_updateRightFreq
@@ -161,9 +259,42 @@ public class BinauralGenerator extends javax.swing.JFrame
         rightChannel.fillBufferWithSineWave(rightFreq);
     }//GEN-LAST:event_updateRightFreq
 
-    private void toggleSound(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleSound
+    private void setLeftAndRight(int leftFreq, int rightFreq) {
+        leftFreqSlider.setValue(leftFreq);
+        leftChannel.fillBufferWithSineWave(leftFreq);
+        rightFreqSlider.setValue(rightFreq);
+        rightChannel.fillBufferWithSineWave(rightFreq);
+    }
+
+    
+    private void preset1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preset1ButtonActionPerformed
+        setLeftAndRight(32, 40);
+    }//GEN-LAST:event_preset1ButtonActionPerformed
+
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
         toggleAudio();
-    }//GEN-LAST:event_toggleSound
+    }//GEN-LAST:event_playButtonActionPerformed
+
+    private void preset1Button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preset1Button1ActionPerformed
+        setLeftAndRight(50, 51);
+    }//GEN-LAST:event_preset1Button1ActionPerformed
+
+    private void preset1Button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preset1Button2ActionPerformed
+        setLeftAndRight(40, 44);
+    }//GEN-LAST:event_preset1Button2ActionPerformed
+
+    private void preset1Button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preset1Button3ActionPerformed
+        setLeftAndRight(24, 30);
+    }//GEN-LAST:event_preset1Button3ActionPerformed
+
+    private void tipsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipsMenuItemActionPerformed
+        String args[] = new String[0];
+        TipsWindow.main(args);
+    }//GEN-LAST:event_tipsMenuItemActionPerformed
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitMenuItemActionPerformed
 
     /**
      * Start and stop the binaural audio.
@@ -178,15 +309,26 @@ public class BinauralGenerator extends javax.swing.JFrame
             isPlaying = true;
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel leftChanLabel;
     private javax.swing.JLabel leftFreqLabel;
     private javax.swing.JSlider leftFreqSlider;
     private javax.swing.JToggleButton playButton;
+    private javax.swing.JButton preset1Button;
+    private javax.swing.JButton preset1Button1;
+    private javax.swing.JButton preset1Button2;
+    private javax.swing.JButton preset1Button3;
+    private javax.swing.JLabel presetsLabel;
     private javax.swing.JLabel rightChanLabel;
     private javax.swing.JLabel rightFreqLabel;
     private javax.swing.JSlider rightFreqSlider;
+    private javax.swing.JMenuItem tipsMenuItem;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
