@@ -10,14 +10,12 @@ Source Code
 -----------
 [Binaural Generator (GitHub.com)](https://www.github.com/DevDungeon/BinauralGenerator)
 
-
 Links
 -----
-[Binaural Generator Project Page (DevDungeon.com)](http://www.devdungeon.com/projects/binaural-beat-generator)
-[Binaural Beats with Java Programming Tutorial](http://www.devdungeon.com/content/binaural-beats-java)
-[Binaural Beats (Wikipedia)](https://en.wikipedia.org/wiki/Binaural_beats)
-[Brainwave Entrainment (Wikipedia)](https://en.wikipedia.org/wiki/Brainwave_entrainment)
-
+* [Binaural Generator Project Page (DevDungeon.com)](http://www.devdungeon.com/projects/binaural-beat-generator)
+* [Binaural Beats with Java Programming Tutorial](http://www.devdungeon.com/content/binaural-beats-java)
+* [Binaural Beats (Wikipedia)](https://en.wikipedia.org/wiki/Binaural_beats)
+* [Brainwave Entrainment (Wikipedia)](https://en.wikipedia.org/wiki/Brainwave_entrainment)
 
 Brainwave Frequencies
 ---------------------
