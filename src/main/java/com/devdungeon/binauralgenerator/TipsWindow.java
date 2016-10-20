@@ -17,11 +17,9 @@
  */
 package com.devdungeon.binauralgenerator;
 
-import com.devdungeon.binauralgenerator.WindowHelper;
-
 /**
  *
- * @author dtron
+ * @author NanoDano <nanodano@devdungeon.com>
  */
 public class TipsWindow extends javax.swing.JFrame {
 

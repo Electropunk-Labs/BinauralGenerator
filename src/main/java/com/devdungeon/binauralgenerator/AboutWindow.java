@@ -17,16 +17,9 @@
  */
 package com.devdungeon.binauralgenerator;
 
-import com.devdungeon.binauralgenerator.WindowHelper;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
- * @author dtron
+ * @author NanoDano <nanodano@devdungeon.com>
  */
 public class AboutWindow extends javax.swing.JFrame {
 

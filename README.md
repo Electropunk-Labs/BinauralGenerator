@@ -5,10 +5,20 @@ Generate custom binaural beats with a GUI.
 
 ![Screenshot of main window](screenshots/mainWindow.png)
 
+Download the JAR
+----------------
+[Binaural Generator from DevDungeon.com](http://www.devdungeon.com/content/binaural-beat-generator)
 
 Source Code
 -----------
 [Binaural Generator (GitHub.com)](https://www.github.com/DevDungeon/BinauralGenerator)
+
+Running
+-------
+* Ensure Java 7 or greater is installed
+* Double click the .jar file or run at the command line with:
+
+`java -jar BinauralGenerator-1.0.jar`
 
 Links
 -----
@@ -28,3 +38,11 @@ Brainwave Frequencies
 Contact
 -------
 NanoDano <nanodano@devdungeon.com>
+
+License
+-------
+GNU General Public License, version 2 (See LICENSE.txt)
+
+Changelog
+---------
+v1.0 - 2016/10/20 - Initial stable release.
