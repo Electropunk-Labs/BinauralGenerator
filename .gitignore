@@ -1,3 +1,7 @@
 target
 nbactions.xml
 .dropbox.attr
+nb-configuration.xml
+*.iml
+.idea
+
